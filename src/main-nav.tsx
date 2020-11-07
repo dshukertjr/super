@@ -18,6 +18,8 @@ import Container from '@material-ui/core/Container';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import HomePage from './pages/home-page';
 import NotFound from './pages/not-found';
+import Hidden from '@material-ui/core/Hidden';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 
 
 
@@ -48,7 +50,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         appBarShift: {
             marginLeft: drawerWidth,
-            width: `calc(100% - ${drawerWidth}px)`,
+            [theme.breakpoints.up('sm')]: {
+                width: `calc(100% - ${drawerWidth}px)`,
+            },
             transition: theme.transitions.create(['width', 'margin'], {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
@@ -109,6 +113,7 @@ function MainNav() {
     const classes = useStyles();
 
     const [open, setOpen] = React.useState(true);
+    const [mobileOpen, setMobileOpen] = React.useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -117,7 +122,34 @@ function MainNav() {
         setOpen(false);
     };
 
+    const handleMobileDrawerOpen = () => {
+        setMobileOpen(true);
+    }
+    const handleMobileDrawerClose = () => {
+        setMobileOpen(false);
+    }
+
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+    const drawerContent = (
+        <div>
+            <div className={classes.toolbarIcon}>
+                <Hidden smUp implementation="css">
+                    <IconButton onClick={handleMobileDrawerClose}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </Hidden>
+                <Hidden xsDown implementation="css">
+                    <IconButton onClick={handleDrawerClose}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </Hidden>
+            </div>
+            <Divider />
+            <List>{mainMenuItems}</List>
+            <Divider />
+            <List>{secondaryMenuItems}</List>
+        </div>);
 
 
     return (
@@ -126,15 +158,28 @@ function MainNav() {
                 <CssBaseline />
                 <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
                     <Toolbar className={classes.toolbar}>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                        >
-                            <MenuIcon />
-                        </IconButton>
+                        <Hidden smUp implementation="css">
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={handleMobileDrawerOpen}
+                                className={clsx(classes.menuButton)}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                        </Hidden>
+                        <Hidden xsDown implementation="css">
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={handleDrawerOpen}
+                                className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                        </Hidden>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Dashboard
           </Typography>
@@ -145,23 +190,30 @@ function MainNav() {
                         </IconButton>
                     </Toolbar>
                 </AppBar>
-                <Drawer
-                    variant="permanent"
-                    classes={{
-                        paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-                    }}
-                    open={open}
-                >
-                    <div className={classes.toolbarIcon}>
-                        <IconButton onClick={handleDrawerClose}>
-                            <ChevronLeftIcon />
-                        </IconButton>
-                    </div>
-                    <Divider />
-                    <List>{mainMenuItems}</List>
-                    <Divider />
-                    <List>{secondaryMenuItems}</List>
-                </Drawer>
+                <Hidden smUp implementation="css">
+                    <SwipeableDrawer
+                        variant="temporary"
+                        classes={{
+                            paper: clsx(classes.drawerPaper),
+                        }}
+                        open={mobileOpen}
+                        onClose={handleMobileDrawerClose}
+                        onOpen={handleMobileDrawerOpen}
+                    >
+                        {drawerContent}
+                    </SwipeableDrawer>
+                </Hidden>
+                <Hidden xsDown implementation="css">
+                    <Drawer
+                        variant="permanent"
+                        classes={{
+                            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                        }}
+                        open={open}
+                    >
+                        {drawerContent}
+                    </Drawer>
+                </Hidden>
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
                     <Container maxWidth="lg" className={classes.container}>
