@@ -20,6 +20,7 @@ import HomePage from './pages/home-page';
 import NotFound from './pages/not-found';
 import Hidden from '@material-ui/core/Hidden';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import CreatePostPage from './pages/create-post-page';
 
 
 
@@ -218,6 +219,7 @@ function MainNav() {
                     <div className={classes.appBarSpacer} />
                     <Container maxWidth="lg" className={classes.container}>
                         <Switch>
+                            <Route path="/create-post" exact component={CreatePostPage} />
                             <Route path="/" exact component={HomePage} />
                             <Route component={NotFound} />
                         </Switch>
