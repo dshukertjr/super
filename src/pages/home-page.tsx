@@ -1,37 +1,56 @@
 import React from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Button from '@material-ui/core/Button'
-import { User } from '@supabase/gotrue-js/dist/main/lib/types'
-import { Post } from '../models/post'
 import { Link } from 'react-router-dom'
+import { Post } from '../models/post'
+import RealtimeSubscription from '@supabase/realtime-js/dist/main/RealtimeSubscription'
 
-function HomePage() {
-  const supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
+class HomePage extends React.Component {
+  supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
+  posts: Post[] = [];
+  postsSubscription: RealtimeSubscription | null = null;
 
-  const getData = async () => {
-    const { data, error } = await supabase
+  constructor(props: {}) {
+    super(props)
+  }
+
+  componentDidMount() {
+    this.getData();
+    this.startListening();
+  }
+
+  componentWillUnmount() {
+    this.postsSubscription?.unsubscribe();
+  }
+
+
+  render() {
+    return (
+      <div>
+        <Button variant="contained" component={Link} to={'/create-post'}>
+          create post
+        </Button>
+      </div >
+    )
+  }
+
+  async getData() {
+    const { data, error } = await this.supabase
       .from('posts')
       .select()
+      .order('id')
+      .limit(120)
     console.log(data)
   }
 
-  const startListening = () => {
-    const mySubscription = supabase
+  startListening() {
+    this.postsSubscription = this.supabase
       .from('people')
       .on('*', payload => {
         console.log('Change received!', payload)
       })
       .subscribe()
-    console.log('mySubscription', mySubscription)
   }
-  return (
-    <div>
-      <Button variant="contained" component={Link} to={'/create-post'}>
-        create post
-      </Button>
-
-    </div>
-  )
 }
 
 export default HomePage
