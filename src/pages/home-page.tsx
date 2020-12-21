@@ -37,10 +37,15 @@ class HomePage extends React.Component {
   async getData() {
     const { data, error } = await this.supabase
       .from('posts')
-      .select()
+      .select(`
+      text,
+      likes(id),
+      user: user_id(id, name)
+      `)
       .order('id')
-      .limit(120)
-    console.log(data)
+      .limit(10)
+    console.log('getData', data)
+    console.log('error', error);
   }
 
   startListening() {
