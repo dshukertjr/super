@@ -1,13 +1,46 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
-import { Post } from '../models/post'
+import { Question } from '../models/question'
 import RealtimeSubscription from '@supabase/realtime-js/dist/main/RealtimeSubscription'
+
+export default function HomePag() {
+  const [posts, setPosts] = useState<Question[]>([]);
+
+  useEffect(() => {
+    getQuestions();
+  }, [])
+
+  const getQuestions = async () => {
+    const supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
+    const { data, error } = await supabase
+      .from<Question>('questions')
+      .select(`
+      question,
+      choices,
+      votes: votes_questionId_fkey(choice, userId),
+      user: questions_userId_fkey(id, name)
+      `)
+      .order('createdAt', { ascending: false })
+      .limit(10)
+    console.log('getData', data)
+    console.log('error', error);
+  }
+
+
+  return <div>
+    <div id="questions">
+
+    </div>
+    <Button variant="contained" component={Link} to={'/create-post'}>
+      create post
+    </Button>
+  </div >;
+}
 
 class HomePage extends React.Component {
   supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
-  posts: Post[] = [];
   postsSubscription: RealtimeSubscription | null = null;
 
   constructor(props: {}) {
@@ -57,5 +90,3 @@ class HomePage extends React.Component {
       .subscribe()
   }
 }
-
-export default HomePage

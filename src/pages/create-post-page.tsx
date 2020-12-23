@@ -2,7 +2,6 @@ import React from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Button from '@material-ui/core/Button'
 import { User } from '@supabase/gotrue-js/dist/main/lib/types'
-import { Post } from '../models/post'
 
 function CreatePostPage() {
     const supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
@@ -32,7 +31,6 @@ function CreatePostPage() {
                 {
                     id: user!.id,
                     name: 'Tyler',
-                    profile: 'Hi, I like this app',
                 }
             ])
 
@@ -53,7 +51,7 @@ function CreatePostPage() {
                         text: `I would like to make this my ${i}th post`,
                         image_url: `https://picsum.photos/id/${i}/200/300`,
                         is_public: (i % 2) == 0,
-                    } as Post
+                    }
                 ])
             // console.log('data', data)
             if (error) console.log('error', error)
