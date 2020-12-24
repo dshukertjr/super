@@ -6,14 +6,17 @@ import { Question } from '../models/question'
 import RealtimeSubscription from '@supabase/realtime-js/dist/main/RealtimeSubscription'
 
 export default function HomePag() {
-  const [posts, setPosts] = useState<Question[]>([]);
+  const supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
+
+
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   useEffect(() => {
     getQuestions();
+    // listenToQuestions();
   }, [])
 
   const getQuestions = async () => {
-    const supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
     const { data, error } = await supabase
       .from<Question>('questions')
       .select(`
@@ -23,15 +26,28 @@ export default function HomePag() {
       user: questions_userId_fkey(id, name)
       `)
       .order('createdAt', { ascending: false })
-      .limit(10)
-    console.log('getData', data)
-    console.log('error', error);
+      .limit(10);
+    if (data) {
+      console.log('getData', data);
+      setQuestions(data);
+    }
+    if (error) console.error('error', error);
   }
+
+  // const listenToQuestions = () => {
+  //   const questionsSubscription = supabase
+  //     .from<Question>('questions')
+  //     .on(`*`, payload => {
+  //       console.log('Change received!', payload)
+  //     })
+  //     .subscribe()
+  // }
 
 
   return <div>
     <div id="questions">
-
+      {questions.map(question => (<div key="{question.id}">{question.question}</div>)
+      )}
     </div>
     <Button variant="contained" component={Link} to={'/create-post'}>
       create post

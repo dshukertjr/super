@@ -1,7 +1,11 @@
 export interface Question {
+  id: string;
   question: string;
   choices: string[];
   createdAt: Date;
   votes: number[],
-  user: { name: string }
+  user: {
+    id: string;
+    name: string;
+  }
 }
