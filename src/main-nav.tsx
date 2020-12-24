@@ -24,6 +24,7 @@ import CreatePostPage from './pages/create-post-page';
 import { createClient } from '@supabase/supabase-js';
 import Button from '@material-ui/core/Button';
 import LoginPage from './pages/login-page';
+import { User } from '@supabase/gotrue-js/dist/main/lib/types'
 
 
 
@@ -119,7 +120,7 @@ function MainNav() {
     const classes = useStyles();
     const [open, setOpen] = useState(true);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -136,10 +137,12 @@ function MainNav() {
     }
 
     const listenToUserState = () => {
-        supabase.auth.onAuthStateChange((event) => {
-            console.log('auth state changed. event: ', event);
+        console.log('user listen started');
+        supabase.auth.onAuthStateChange((event, session) => {
+            console.log('auth state changed. event: ', event, session);
             const newUser = supabase.auth.user();
             console.log('newUser', newUser);
+            setUser(newUser);
         })
     }
 
@@ -199,6 +202,10 @@ function MainNav() {
                             </IconButton>
                         </Hidden>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>Dashboard</Typography>
+                        {
+                            user &&
+                            <Typography component="h1" variant="h6" color="inherit">{user.id}</Typography>
+                        }
                         <Button component={Link} to={'/login'}>login</Button>
                         <Button onClick={supabase.auth.signOut}>logout</Button>
                         {/* <Typography>{user.uid}</Typography> */}

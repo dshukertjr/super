@@ -20,6 +20,7 @@ function HomePage() {
     const { data, error } = await supabase
       .from<Question>('questions')
       .select(`
+      id,
       question,
       choices,
       votes: votes_questionId_fkey(choice, userId),
@@ -47,7 +48,7 @@ function HomePage() {
 
   return <div>
     <div id="questions">
-      {questions.map(question => (<div key="{question.id}">{question.question}</div>)
+      {questions.map(question => (<div key={question.id}>{question.question}</div>)
       )}
     </div>
     <Button variant="contained" component={Link} to={'/create-post'}>

@@ -62,7 +62,7 @@ export default function LoginPage() {
 
     const login = async () => {
         const { user, error } = await supabase.auth.signIn({
-            email: 'example+1@email.com',
+            email: 'example+2@email.com',
             password: 'example-password',
         })
         console.log('user', user)
