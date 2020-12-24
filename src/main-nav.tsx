@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
 import { mainMenuItems, secondaryMenuItems } from './components/menu-items';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -15,12 +15,15 @@ import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Switch, Link } from 'react-router-dom';
 import HomePage from './pages/home-page';
 import NotFound from './pages/not-found';
 import Hidden from '@material-ui/core/Hidden';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import CreatePostPage from './pages/create-post-page';
+import { createClient } from '@supabase/supabase-js';
+import Button from '@material-ui/core/Button';
+import LoginPage from './pages/login-page';
 
 
 
@@ -40,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: 'center',
             justifyContent: 'flex-end',
             padding: '0 8px',
-            ...theme.mixins.toolbar,
+            // ...theme.mixins.toolbar,
         },
         appBar: {
             zIndex: theme.zIndex.drawer + 1,
@@ -111,10 +114,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function MainNav() {
-    const classes = useStyles();
+    const supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
 
-    const [open, setOpen] = React.useState(true);
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const classes = useStyles();
+    const [open, setOpen] = useState(true);
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [user, setUser] = useState(null);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -129,6 +134,18 @@ function MainNav() {
     const handleMobileDrawerClose = () => {
         setMobileOpen(false);
     }
+
+    const listenToUserState = () => {
+        supabase.auth.onAuthStateChange((event) => {
+            console.log('auth state changed. event: ', event);
+            const newUser = supabase.auth.user();
+            console.log('newUser', newUser);
+        })
+    }
+
+    useEffect(() => {
+        listenToUserState();
+    }, [])
 
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -181,14 +198,15 @@ function MainNav() {
                                 <MenuIcon />
                             </IconButton>
                         </Hidden>
-                        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Dashboard
-          </Typography>
-                        <IconButton color="inherit">
+                        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>Dashboard</Typography>
+                        <Button component={Link} to={'/login'}>login</Button>
+                        <Button onClick={supabase.auth.signOut}>logout</Button>
+                        {/* <Typography>{user.uid}</Typography> */}
+                        {/* <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
-                        </IconButton>
+                        </IconButton> */}
                     </Toolbar>
                 </AppBar>
                 <Hidden smUp implementation="css">
@@ -219,6 +237,7 @@ function MainNav() {
                     <div className={classes.appBarSpacer} />
                     <Container maxWidth="lg" className={classes.container}>
                         <Switch>
+                            <Route path="/login" exact component={LoginPage} />
                             <Route path="/create-post" exact component={CreatePostPage} />
                             <Route path="/" exact component={HomePage} />
                             <Route component={NotFound} />
