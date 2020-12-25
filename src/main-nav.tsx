@@ -26,6 +26,7 @@ import Button from '@material-ui/core/Button';
 import LoginPage from './pages/login-page';
 import { User } from '@supabase/gotrue-js/dist/main/lib/types'
 import { Subscriptions } from '@material-ui/icons';
+import { useAuth } from './hooks/supabaseHooks';
 
 
 
@@ -116,7 +117,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function MainNav() {
-    const supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
+    const auth = useAuth();
 
     const classes = useStyles();
     const [open, setOpen] = useState(true);
@@ -139,9 +140,9 @@ function MainNav() {
 
     const listenToUserState = () => {
         console.log('user listen started');
-        const { data: subscription, error } = supabase.auth.onAuthStateChange((event, session) => {
+        const { data: subscription, error } = auth.onAuthStateChange((event, session) => {
             console.log('auth state changed. event: ', event, session);
-            const newUser = supabase.auth.user();
+            const newUser = auth.user();
             console.log('newUser', newUser);
             setUser(newUser);
         })
@@ -150,7 +151,7 @@ function MainNav() {
     }
 
     const login = async () => {
-        const { user, error } = await supabase.auth.signIn({
+        const { user, error } = await auth.signIn({
             email: 'example+2@email.com',
             password: 'example-password',
         })
@@ -160,7 +161,7 @@ function MainNav() {
 
 
     const signout = () => {
-        supabase.auth.signOut();
+        auth.signOut();
     }
 
     useEffect(() => {
