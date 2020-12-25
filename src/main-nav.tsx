@@ -25,6 +25,7 @@ import { createClient } from '@supabase/supabase-js';
 import Button from '@material-ui/core/Button';
 import LoginPage from './pages/login-page';
 import { User } from '@supabase/gotrue-js/dist/main/lib/types'
+import { Subscriptions } from '@material-ui/icons';
 
 
 
@@ -138,12 +139,28 @@ function MainNav() {
 
     const listenToUserState = () => {
         console.log('user listen started');
-        supabase.auth.onAuthStateChange((event, session) => {
+        const { data: subscription, error } = supabase.auth.onAuthStateChange((event, session) => {
             console.log('auth state changed. event: ', event, session);
             const newUser = supabase.auth.user();
             console.log('newUser', newUser);
             setUser(newUser);
         })
+        console.log('subscription', subscription);
+        console.log('error', error)
+    }
+
+    const login = async () => {
+        const { user, error } = await supabase.auth.signIn({
+            email: 'example+2@email.com',
+            password: 'example-password',
+        })
+        console.log('user', user)
+        console.log('error', error)
+    }
+
+
+    const signout = () => {
+        supabase.auth.signOut();
     }
 
     useEffect(() => {
@@ -206,8 +223,9 @@ function MainNav() {
                             user &&
                             <Typography component="h1" variant="h6" color="inherit">{user.id}</Typography>
                         }
-                        <Button component={Link} to={'/login'}>login</Button>
-                        <Button onClick={supabase.auth.signOut}>logout</Button>
+                        {/* <Button component={Link} to={'/login'}>login</Button> */}
+                        <Button onClick={login}>login</Button>
+                        <Button onClick={signout}>logout</Button>
                         {/* <Typography>{user.uid}</Typography> */}
                         {/* <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
