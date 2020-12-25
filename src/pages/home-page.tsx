@@ -3,10 +3,10 @@ import { createClient } from '@supabase/supabase-js'
 import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 import { Question } from '../models/question'
-import RealtimeSubscription from '@supabase/realtime-js/dist/main/RealtimeSubscription'
+import { useDatabase } from '../hooks/supabaseHooks'
 
-function HomePage() {
-  const supabase = createClient('https://jkrdftyhktrpnhjwjhhr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYwMjk0MDk1NiwiZXhwIjoxOTE4NTE2OTU2fQ.SDBQlVmSVh91ztRx8-3N2hNuPvhiDbjKR0nEcBKTr_U')
+export default function HomePage() {
+  const questionsTable = useDatabase<Question>('questions');
 
 
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -17,8 +17,7 @@ function HomePage() {
   }, [])
 
   const getQuestions = async () => {
-    const { data, error } = await supabase
-      .from<Question>('questions')
+    const { data, error } = await questionsTable
       .select(`
       id,
       question,
@@ -108,5 +107,3 @@ function HomePage() {
 //       .subscribe()
 //   }
 // }
-
-export default HomePage;

@@ -9,11 +9,9 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import React, { useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
 import { mainMenuItems, secondaryMenuItems } from './components/menu-items';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import List from '@material-ui/core/List';
 import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import { Route, BrowserRouter as Router, Switch, Link } from 'react-router-dom';
 import HomePage from './pages/home-page';
@@ -21,12 +19,10 @@ import NotFound from './pages/not-found';
 import Hidden from '@material-ui/core/Hidden';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import CreatePostPage from './pages/create-post-page';
-import { createClient } from '@supabase/supabase-js';
 import Button from '@material-ui/core/Button';
 import LoginPage from './pages/login-page';
 import { User } from '@supabase/gotrue-js/dist/main/lib/types'
-import { Subscriptions } from '@material-ui/icons';
-import { useAuth } from './hooks/supabaseHooks';
+import { useAuth, useUser } from './hooks/supabaseHooks';
 
 
 
@@ -118,11 +114,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function MainNav() {
     const auth = useAuth();
+    const user = useUser();
 
     const classes = useStyles();
     const [open, setOpen] = useState(true);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -138,18 +134,6 @@ function MainNav() {
         setMobileOpen(false);
     }
 
-    const listenToUserState = () => {
-        console.log('user listen started');
-        const { data: subscription, error } = auth.onAuthStateChange((event, session) => {
-            console.log('auth state changed. event: ', event, session);
-            const newUser = auth.user();
-            console.log('newUser', newUser);
-            setUser(newUser);
-        })
-        console.log('subscription', subscription);
-        console.log('error', error)
-    }
-
     const login = async () => {
         const { user, error } = await auth.signIn({
             email: 'example+2@email.com',
@@ -163,10 +147,6 @@ function MainNav() {
     const signout = () => {
         auth.signOut();
     }
-
-    useEffect(() => {
-        listenToUserState();
-    }, [])
 
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 

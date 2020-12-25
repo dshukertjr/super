@@ -1,11 +1,12 @@
 import React from 'react'
-import { createClient } from '@supabase/supabase-js'
 import Button from '@material-ui/core/Button'
 import { User } from '@supabase/gotrue-js/dist/main/lib/types'
 import { useAuth, useDatabase } from '../hooks/supabaseHooks';
+import { TableUser } from '../models/tableUser';
 
 export default function LoginPage() {
     const auth = useAuth();
+    const usersTable = useDatabase<TableUser>('users');
 
     const createUser = async () => {
         let user = getUser()
@@ -19,7 +20,7 @@ export default function LoginPage() {
             console.log('error', signUpError)
         }
 
-        const { data, error: insertError } = await useDatabase('users')
+        const { data, error: insertError } = await usersTable
             .insert([
                 {
                     id: user!.id,
