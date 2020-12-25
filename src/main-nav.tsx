@@ -18,7 +18,7 @@ import HomePage from './pages/home-page';
 import NotFound from './pages/not-found';
 import Hidden from '@material-ui/core/Hidden';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import CreatePostPage from './pages/create-post-page';
+import CreateQuestion from './pages/create-post-page';
 import Button from '@material-ui/core/Button';
 import LoginPage from './pages/login-page';
 import { User } from '@supabase/gotrue-js/dist/main/lib/types'
@@ -170,6 +170,14 @@ function MainNav() {
             <List>{secondaryMenuItems}</List>
         </div>);
 
+    let loginButtons;
+    if (user) {
+        loginButtons = <><Typography component="p" variant="body1" color="inherit">{user.id}</Typography>
+            <Button onClick={signout}>logout</Button></>
+    } else {
+        loginButtons = <Button component={Link} to={'/login'}>login</Button>;
+
+    }
 
     return (
         <Router>
@@ -200,19 +208,7 @@ function MainNav() {
                             </IconButton>
                         </Hidden>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>Dashboard</Typography>
-                        {
-                            user &&
-                            <Typography component="h1" variant="h6" color="inherit">{user.id}</Typography>
-                        }
-                        {/* <Button component={Link} to={'/login'}>login</Button> */}
-                        <Button onClick={login}>login</Button>
-                        <Button onClick={signout}>logout</Button>
-                        {/* <Typography>{user.uid}</Typography> */}
-                        {/* <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton> */}
+                        {loginButtons}
                     </Toolbar>
                 </AppBar>
                 <Hidden smUp implementation="css">
@@ -244,7 +240,7 @@ function MainNav() {
                     <Container maxWidth="lg" className={classes.container}>
                         <Switch>
                             <Route path="/login" exact component={LoginPage} />
-                            <Route path="/create-post" exact component={CreatePostPage} />
+                            <Route path="/create-post" exact component={CreateQuestion} />
                             <Route path="/" exact component={HomePage} />
                             <Route component={NotFound} />
                         </Switch>
