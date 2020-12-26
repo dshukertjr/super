@@ -51,7 +51,7 @@ export default function HomePage() {
       )}
     </div>
     <Button variant="contained" component={Link} to={'/create-post'}>
-      create post
+      Post a new Question
     </Button>
   </div >;
 }
