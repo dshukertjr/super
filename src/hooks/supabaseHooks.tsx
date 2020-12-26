@@ -20,19 +20,13 @@ export function useUser() {
     const getInitialUser = () => {
         const initialUser = supabase.auth.user();
         setUser(initialUser);
-        console.log('initialUser is ', initialUser);
     }
 
     const listenToUserState = () => {
-        console.log('user listen started');
         const { data: subscription, error } = supabase.auth.onAuthStateChange((event, session) => {
-            console.log('auth state changed. event: ', event, session);
             const newUser = supabase.auth.user();
-            console.log('newUser', newUser);
             setUser(newUser);
         })
-        console.log('subscription', subscription);
-        console.log('error', error)
     }
 
     useEffect(() => {

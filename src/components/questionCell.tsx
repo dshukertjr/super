@@ -25,6 +25,11 @@ function VoteButton(props: { index: number, choice: string, questionId: number }
     async function answer() {
         console.log('answered', choice)
 
+        if (!user?.id) {
+            console.error('The user is not logged in')
+            return;
+        }
+
         const { data, error } = await questionTable.insert({
             userId: user!.id,
             choice: index,
