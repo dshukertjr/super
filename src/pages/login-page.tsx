@@ -1,7 +1,7 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
 import { User } from '@supabase/gotrue-js/dist/main/lib/types'
-import { useAuth, useDatabase } from '../hooks/supabaseHooks';
+import { Database, useAuth, useDatabase } from '../hooks/supabaseHooks';
 import { TableUser } from '../models/tableUser';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -10,7 +10,7 @@ import { useHistory } from 'react-router-dom';
 
 export default function LoginPage() {
     const auth = useAuth();
-    const usersTable = useDatabase<TableUser>('users');
+    const usersTable = useDatabase<TableUser>(Database.users);
     const history = useHistory();
 
 

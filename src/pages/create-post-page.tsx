@@ -1,13 +1,13 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
-import { useDatabase, useUser } from '../hooks/supabaseHooks'
+import { Database, useDatabase, useUser } from '../hooks/supabaseHooks'
 import { Question } from '../models/question'
 import TextField from '@material-ui/core/TextField'
 import * as yup from 'yup';
 import { useFormik } from 'formik'
 
 export default function CreateQuestion() {
-    const questionsTable = useDatabase<Question>('questions');
+    const questionsTable = useDatabase<Question>(Database.questions);
     const user = useUser();
 
     const validationSchema = yup.object({

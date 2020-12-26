@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 import { Question } from '../models/question'
-import { useDatabase } from '../hooks/supabaseHooks'
+import { Database, useDatabase } from '../hooks/supabaseHooks'
 import QuestionCell from '../components/questionCell'
 
 export default function HomePage() {
-  const questionsTable = useDatabase<Question>('questions');
+  const questionsTable = useDatabase<Question>(Database.questions);
 
 
   const [questions, setQuestions] = useState<Question[]>([]);
