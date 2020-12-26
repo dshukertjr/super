@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 import { Question } from '../models/question'
 import { useDatabase } from '../hooks/supabaseHooks'
+import QuestionCell from '../components/questionCell'
 
 export default function HomePage() {
   const questionsTable = useDatabase<Question>('questions');
@@ -22,6 +23,7 @@ export default function HomePage() {
       id,
       question,
       choices,
+      userId,
       votes: votes_questionId_fkey(choice, userId),
       user: questions_userId_fkey(id, name)
       `)
@@ -47,7 +49,7 @@ export default function HomePage() {
 
   return <div>
     <div id="questions">
-      {questions.map(question => (<div key={question.id}>{question.question}</div>)
+      {questions.map(question => <QuestionCell key={question.id} question={question}></QuestionCell>
       )}
     </div>
     <Button variant="contained" component={Link} to={'/create-post'}>
