@@ -6,10 +6,13 @@ import { TableUser } from '../models/tableUser';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import TextField from '@material-ui/core/TextField';
+import { useHistory } from 'react-router-dom';
 
 export default function LoginPage() {
     const auth = useAuth();
     const usersTable = useDatabase<TableUser>('users');
+    const history = useHistory();
+
 
     const createUser = async () => {
         let user = getUser()
@@ -71,8 +74,8 @@ export default function LoginPage() {
 
     const formik = useFormik({
         initialValues: {
-            email: '',
-            password: '',
+            email: 'example+2@email.com',
+            password: 'example-password',
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
@@ -80,6 +83,12 @@ export default function LoginPage() {
                 email: values.email,
                 password: values.password,
             });
+            if (error) {
+                console.error('error signing in', error)
+            } else {
+                console.log('user', user);
+                history.push("/");
+            }
         },
     });
 
@@ -108,7 +117,7 @@ export default function LoginPage() {
                     error={formik.touched.password && Boolean(formik.errors.password)}
                     helperText={formik.touched.password && formik.errors.password}
                 />
-                <Button color="primary" variant="contained" type="submit">Create Question</Button>
+                <Button color="primary" variant="contained" type="submit">Login</Button>
             </form>
             {/* <Button onClick={createUser}>Create User</Button>
             <Button onClick={login}>Login</Button>
