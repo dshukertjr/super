@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
 import { QuestionAnswerTwoTone } from "@material-ui/icons";
 import React from "react";
 import { Database, useDatabase, useUser } from "../hooks/supabaseHooks";
@@ -10,7 +11,12 @@ export default function QuestionCell(props: { question: Question }) {
 
     return <div className="questionCell">
         <h4>{question.question}</h4>
-        {question.choices.map((choice, index) => <VoteButton key={index} questionId={question.id} index={index} choice={choice}></VoteButton>)}
+        <div className="voteButtons">
+            {question.choices.map((choice, index) => <VoteButton key={index} questionId={question.id} index={index} choice={choice}></VoteButton>)}
+        </div>
+        <div className="results">
+            {question.choices.map((choice, index) => <ResultCell key={index} votes={question.votes} choice={choice} index={index}></ResultCell>)}
+        </div>
     </div>;
 }
 
@@ -41,4 +47,27 @@ function VoteButton(props: { index: number, choice: string, questionId: number }
     }
 
     return <Button color="secondary" onClick={answer}>{props.choice}</Button>;
+}
+
+const useStyles = makeStyles({
+    mine: {
+        color: 'red'
+    },
+    notMine:
+    {
+        colod: 'black'
+    }
+});
+
+function ResultCell(props: { votes: Vote[], choice: string, index: number }) {
+    const classes = useStyles();
+    const user = useUser();
+    const index = props.index;
+    const votes = props.votes;
+    const totalVotes = votes.length;
+    const votesForThisChoice = votes.filter(vote => vote.choice == index);
+    const voteCountForThisChoice = votesForThisChoice.length;
+    const percent = Math.round(voteCountForThisChoice * 100 / totalVotes);
+    const isUsersChoice = votesForThisChoice.filter(vote => vote.userId == user?.id).length > 0;
+    return <span className={isUsersChoice ? classes.mine : classes.notMine}>{props.choice} {percent}%</span>
 }
