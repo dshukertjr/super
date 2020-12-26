@@ -3,6 +3,9 @@ import Button from '@material-ui/core/Button'
 import { User } from '@supabase/gotrue-js/dist/main/lib/types'
 import { useAuth, useDatabase } from '../hooks/supabaseHooks';
 import { TableUser } from '../models/tableUser';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import TextField from '@material-ui/core/TextField';
 
 export default function LoginPage() {
     const auth = useAuth();
@@ -55,13 +58,62 @@ export default function LoginPage() {
         return user
     }
 
+    const validationSchema = yup.object({
+        email: yup
+            .string()
+            .email('Enter a valid email')
+            .required('Email is required'),
+        password: yup
+            .string()
+            .min(8, 'Password should be of minimum 8 characters length')
+            .required('Password is required'),
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            const { user, error } = await auth.signIn({
+                email: values.email,
+                password: values.password,
+            });
+        },
+    });
+
     return (
         <div>
-            <h1>Home</h1>
-            <Button onClick={createUser}>Create User</Button>
+            <h1>Login</h1>
+            <form onSubmit={formik.handleSubmit} noValidate autoComplete="off">
+                <TextField
+                    fullWidth
+                    id="email"
+                    name="email"
+                    label="Email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.email && formik.errors.email}
+                />
+                <TextField
+                    fullWidth
+                    id="password"
+                    name="password"
+                    label="Password"
+                    type="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    error={formik.touched.password && Boolean(formik.errors.password)}
+                    helperText={formik.touched.password && formik.errors.password}
+                />
+                <Button color="primary" variant="contained" type="submit">Create Question</Button>
+            </form>
+            {/* <Button onClick={createUser}>Create User</Button>
             <Button onClick={login}>Login</Button>
             <Button onClick={logout}>logout</Button>
-            <Button onClick={getUser}>Get User</Button>
+            <Button onClick={getUser}>Get User</Button> */}
         </div>
     )
 }
