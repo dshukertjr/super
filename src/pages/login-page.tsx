@@ -14,43 +14,29 @@ export default function LoginPage() {
     const history = useHistory();
 
 
-    const createUser = async () => {
-        let user = getUser()
-        if (!user) {
-            console.log('user is not logged in, so login first')
-            const { user, error: signUpError } = await auth.signUp({
-                email: 'example+2@email.com',
-                password: 'example-password',
-            })
-            console.log('user', user)
-            console.log('error', signUpError)
-        }
+    // const createUser = async () => {
+    //     let user = getUser()
+    //     if (!user) {
+    //         console.log('user is not logged in, so login first')
+    //         const { user, error: signUpError } = await auth.signUp({
+    //             email: 'example+2@email.com',
+    //             password: 'example-password',
+    //         })
+    //         console.log('user', user)
+    //         console.log('error', signUpError)
+    //     }
 
-        const { data, error: insertError } = await usersTable
-            .insert([
-                {
-                    id: user!.id,
-                    name: 'Tyler',
-                }
-            ])
+    //     const { data, error: insertError } = await usersTable
+    //         .insert([
+    //             {
+    //                 id: user!.id,
+    //                 name: 'Tyler',
+    //             }
+    //         ])
 
-        console.log('data', data)
-        console.log('insertError', insertError)
-    }
-
-    const login = async () => {
-        const { user, error } = await auth.signIn({
-            email: 'example+2@email.com',
-            password: 'example-password',
-        })
-        console.log('user', user)
-        console.log('error', error)
-    }
-
-    const logout = async () => {
-        const error = await auth.signOut()
-        console.log('error', error)
-    }
+    //     console.log('data', data)
+    //     console.log('insertError', insertError)
+    // }
 
     const getUser = (): User | null => {
         const session = auth.session()
