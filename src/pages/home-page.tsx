@@ -22,9 +22,9 @@ export default function HomePage() {
       id,
       question,
       choices,
-      userId,
-      votes: votes_questionId_fkey(choice, userId),
-      user: questions_userId_fkey(id, name)
+      user_id,
+      votes: votes_questionId_fkey(choice, user_id),
+      user: questions_user_id_fkey(id, name)
       `)
       .order('createdAt', { ascending: false })
       .limit(10);
@@ -38,7 +38,7 @@ export default function HomePage() {
   // const listenToQuestions = () => {
   //   console.log('listener setting');
   //   const questionsSubscription = supabase
-  //     .from<Question>(`questions:userId=eq.b2789ea7-a1ed-4a8e-be1a-396f017d59fd`)
+  //     .from<Question>(`questions:user_id=eq.b2789ea7-a1ed-4a8e-be1a-396f017d59fd`)
   //     .on(`*`, payload => {
   //       console.log('Change received!', payload)
   //     })

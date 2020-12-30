@@ -37,7 +37,7 @@ function VoteButton(props: { index: number, choice: string, questionId: number }
         }
 
         const { data, error } = await questionTable.insert({
-            userId: user!.id,
+            user_id: user!.id,
             choice: index,
             questionId,
         });
@@ -68,6 +68,6 @@ function ResultCell(props: { votes: Vote[], choice: string, index: number }) {
     const votesForThisChoice = votes.filter(vote => vote.choice == index);
     const voteCountForThisChoice = votesForThisChoice.length;
     const percent = Math.round(voteCountForThisChoice * 100 / totalVotes);
-    const isUsersChoice = votesForThisChoice.filter(vote => vote.userId == user?.id).length > 0;
+    const isUsersChoice = votesForThisChoice.filter(vote => vote.user_id == user?.id).length > 0;
     return <span className={isUsersChoice ? classes.mine : classes.notMine}>{props.choice} {percent}%</span>
 }

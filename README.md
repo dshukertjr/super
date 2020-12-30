@@ -3,7 +3,22 @@
 ```
 
 ALTER TABLE votes
-ADD UNIQUE("userId", "questionId")
+ADD UNIQUE("user_id", "question_id")
+
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow logged-in read access" on users FOR SELECT USING ( auth.role() = 'authenticated' );
+CREATE POLICY "Allow individual insert access" on users FOR INSERT WITH CHECK ( auth.uid() = id );
+CREATE POLICY "Allow individual update access" on users FOR UPDATE USING ( auth.uid() = id );
+
+
+CREATE POLICY "Allow logged-in read access" on questions FOR SELECT USING ( auth.role() = 'authenticated' );
+CREATE POLICY "Allow individual insert access" on questions FOR INSERT WITH CHECK ( auth.uid() = user_id );
+
+ALTER TABLE votes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow logged-in read access" on votes FOR SELECT USING ( auth.role() = 'authenticated' );
+CREATE POLICY "Allow individual insert access" on votes FOR INSERT WITH CHECK ( auth.uid() = user_id );
+
+
 
 ```
 

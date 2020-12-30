@@ -34,7 +34,7 @@ export default function CreateQuestion() {
                 {
                     question: values.question,
                     choices: [values.choice1, values.choice2],
-                    userId: user!.id,
+                    user_id: user!.id,
                 }
             ]);
             console.log('data', data);

@@ -6,7 +6,7 @@ export interface Question {
   choices: string[];
   createdAt: Date;
   votes: Vote[],
-  userId: string,
+  user_id: string,
   user: {
     id: string;
     name: string;

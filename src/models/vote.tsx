@@ -1,5 +1,5 @@
 export default interface Vote {
-    userId: string;
+    user_id: string;
     questionId: number;
     choice: number;
 }
