@@ -24,6 +24,9 @@ export function useUser() {
 
     const listenToUserState = () => {
         const { data: subscription, error } = supabase.auth.onAuthStateChange((event, session) => {
+            console.log('auth state updated');
+            console.log('event', event);
+            console.log('session', session);
             const newUser = supabase.auth.user();
             setUser(newUser);
         })
