@@ -23,8 +23,8 @@ export default function HomePage() {
       question,
       choices,
       user_id,
-      votes: votes_questionId_fkey(choice, user_id),
-      user: questions_userId_fkey(id, name)
+      votes: votes_question_id_fkey(choice, user_id),
+      user: user_id(id, name)
       `)
       .order('createdAt', { ascending: false })
       .limit(10);

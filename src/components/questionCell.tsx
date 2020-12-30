@@ -26,7 +26,7 @@ function VoteButton(props: { index: number, choice: string, questionId: number }
 
     const index = props.index;
     const choice = props.choice;
-    const questionId = props.questionId;
+    const question_id = props.questionId;
 
     async function answer() {
         console.log('answered', choice)
@@ -39,7 +39,7 @@ function VoteButton(props: { index: number, choice: string, questionId: number }
         const { data, error } = await questionTable.insert({
             user_id: user!.id,
             choice: index,
-            questionId,
+            question_id: question_id,
         });
 
         console.log('data', data);
