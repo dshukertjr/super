@@ -24,7 +24,7 @@ export default function HomePage() {
       choices,
       user_id,
       votes: votes_questionId_fkey(choice, user_id),
-      user: questions_user_id_fkey(id, name)
+      user: questions_userId_fkey(id, name)
       `)
       .order('createdAt', { ascending: false })
       .limit(10);
